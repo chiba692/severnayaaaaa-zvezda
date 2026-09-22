@@ -1,0 +1,2 @@
+const {reply,env,isAdmin}=require('./_util');
+exports.handler=async event=>{if(event.httpMethod!=='GET')return reply(405,{error:'Method not allowed'});if(!isAdmin(event))return reply(401,{error:'Требуется авторизация'});try{const {url,headers}=env();const r=await fetch(`${url}/rest/v1/bookings?select=*&order=booking_date.desc,booking_time.desc,id.desc`,{headers});if(!r.ok)throw Error(await r.text());return reply(200,{bookings:await r.json()})}catch(e){console.error(e);return reply(500,{error:'Не удалось получить заявки'})}};
